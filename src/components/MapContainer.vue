@@ -28,10 +28,11 @@
             <v-icon :color="currentPointColor">{{ "mdi-" + data.item }}</v-icon>
           </template>
         </v-select>
-        <v-btn height="40" elevation="0" v-if="isPopupEditMode" @click="editPoint"
-          >Edit</v-btn
-        >
-        <v-btn height="40" elevation="0" v-else @click="addPoint">Add</v-btn>
+        <template v-if="isPopupEditMode">
+          <v-btn color="accent" height="40" elevation="0" @click="editPoint">Edit</v-btn>
+          <v-btn color="#ff8888" height="40" elevation="0" @click="deletePoint">Delete</v-btn>
+        </template>
+        <v-btn color="accent" height="40" elevation="0" v-else @click="addPoint">Add</v-btn>
       </div>
     </div>
     <!-- /Попап -->
@@ -184,7 +185,7 @@ export default {
       source.clear();
       source.addFeatures(features);
     },
-    // добавить марер
+    // добавить маркер
     addPoint() {
       const newPont = {
         type: this.currentPointType,
@@ -195,6 +196,14 @@ export default {
       // скрываем попап
       this.overlay.setPosition(undefined);
       this.currentPointPosition = null;
+      this.updateSource();
+    },
+    // удалить маркер
+    deletePoint() {
+      this.pointsCoordinates.splice(this.currentPointId, 1);
+      this.overlay.setPosition(undefined);
+      this.currentPointPosition = null;
+      this.currentPointId = null;
       this.updateSource();
     },
     // изменить маркер
@@ -230,7 +239,7 @@ export default {
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
-  width: 281px;
+  width: fit-content;
 }
 .ol-popup:after,
 .ol-popup:before {
@@ -267,6 +276,6 @@ export default {
   display: grid;
   margin-bottom: -10px;
   gap: 15px;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 </style>
